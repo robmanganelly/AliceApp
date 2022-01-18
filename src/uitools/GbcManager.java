@@ -16,7 +16,7 @@ public class GbcManager extends GridBagConstraints {
 	private double _weighty = 0;
 	private Insets _insets = new Insets(0,0,5,5);
 	
-	
+
 	private static final long serialVersionUID = 1L;
 
 	public GbcManager(int gridx, int gridy, int gridwidth, int gridheight, double weightx, double weighty, int anchor, int fill, Insets insets, int ipadx, int ipady) {
