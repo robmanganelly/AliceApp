@@ -2,7 +2,11 @@ package uitools;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-
+/** GbcManager creates a GridBagConstraints Object, is recommended to use the empty constructor along with the property's and build methods
+ * 
+ * @author robmanganelly
+ *
+ */
 public class GbcManager extends GridBagConstraints {
 	private int _anchor = GridBagConstraints.CENTER; // TODO fix this
 	private int _gridheight = 1; 
@@ -72,44 +76,6 @@ public class GbcManager extends GridBagConstraints {
 		super();
 	}
 	
-	// builder methods
-//	public GbcManager build(){
-//		if(this._gridx > -10) {
-//			super.gridx = this._gridx;
-//		}
-//		if(this._gridy > -10) {
-//			super.gridy = this._gridy;
-//		}
-//		if(this._gridwidth > -10) {
-//			super.gridwidth = this._gridwidth;
-//		}
-//		if(this._gridheight > -10) {
-//			super.gridheight = this._gridheight;
-//		}
-//		if(this._anchor > -10) {
-//			super.anchor = this._anchor;
-//		}
-//		if(this._fill > -10) {
-//			super.fill = this._fill;
-//		}
-//		if(this._ipadx > -10) {
-//			super.ipadx = this._ipadx;
-//		}
-//		if(this._ipady > -10) {
-//			super.ipady = this._ipady;
-//		}
-//		if(this._weightx > -10) {
-//			super.weightx = this._weightx;
-//		}
-//		if(this._weighty > -10) {
-//			super.weighty = this._weighty;
-//		}
-//		if(this._insets instanceof Insets ) {
-//			super.insets = this._insets;
-//		}
-//		
-//		return this;
-//	}
 	public GbcManager build(){
 		
 		// set properties value, if not set default values;
