@@ -1,30 +1,33 @@
 package application;
 
-import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import javax.swing.JTabbedPane;
-import java.awt.CardLayout;
 import javax.swing.JLabel;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.JTree;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.Font;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.ListSelectionModel;
-import java.awt.Dimension;
-import java.awt.Component;
+
+import uicomponents.AdministrativePanel;
+import uicomponents.DiaryPanel;
+import uicomponents.InventoryPanel;
+import uicomponents.ProfilePanel;
+import uicomponents.QueriesPanel;
+import uicomponents.RecordsPanel;
+import uitools.GbcManager;
+
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+
+import javax.swing.SwingConstants;
 
 public class AliceAppMainFrame extends JFrame {
 
@@ -32,8 +35,16 @@ public class AliceAppMainFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTable table;
+	private JLabel dateLabel, usernameLabel;
+	private MyClock applicationClock;
+	private final JPanel contentPane = new JPanel(), mainTabPanel  = new JPanel();
+	private JTabbedPane mainFrameTab;
+	private DiaryPanel diaryPanel;						//subclass
+	private InventoryPanel inventoryPanel;				//subclass
+	private RecordsPanel recordsPanel;					//subclass
+	private QueriesPanel queriesPanel;					//subclass
+	private ProfilePanel profilePanel;					//subclass
+	private AdministrativePanel administrativePanel;	//subclass
 
 	/**
 	 * Launch the application.
@@ -55,181 +66,79 @@ public class AliceAppMainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AliceAppMainFrame() {
+		// set frame layout
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1305, 789);
-		contentPane = new JPanel();
+		
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{0, 0, 852, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 50, 377, 0};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		contentPane.setLayout(gbl_contentPane);
 		
-		JTabbedPane mainFrameTab = new JTabbedPane(JTabbedPane.TOP);
-		mainFrameTab.setAutoscrolls(true);
-		contentPane.add(mainFrameTab);
 		
-		JPanel diaryPanel = new JPanel();
-		mainFrameTab.addTab("Diary", null, diaryPanel, "register all actions over your session here");
-		mainFrameTab.setMnemonicAt(0, 1);
-		GridBagLayout gbl_diaryPanel = new GridBagLayout();
-		gbl_diaryPanel.columnWidths = new int[]{1290, 0};
-		gbl_diaryPanel.rowHeights = new int[]{15, 15, 15, 15, 15, 0};
-		gbl_diaryPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_diaryPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		diaryPanel.setLayout(gbl_diaryPanel);
+		//create UI elements
+		diaryPanel = new DiaryPanel();
+		inventoryPanel = new InventoryPanel();
+		recordsPanel = new RecordsPanel();
+		queriesPanel = new QueriesPanel();
+		profilePanel = new ProfilePanel();
+		administrativePanel = new AdministrativePanel();
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.fill = GridBagConstraints.BOTH;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 0;
-		diaryPanel.add(lblNewLabel, gbc_lblNewLabel);
 		
-		JLabel label = new JLabel("");
-		GridBagConstraints gbc_label = new GridBagConstraints();
-		gbc_label.fill = GridBagConstraints.BOTH;
-		gbc_label.insets = new Insets(0, 0, 5, 0);
-		gbc_label.gridx = 0;
-		gbc_label.gridy = 1;
-		diaryPanel.add(label, gbc_label);
-		
-		JLabel label_1 = new JLabel("");
-		GridBagConstraints gbc_label_1 = new GridBagConstraints();
-		gbc_label_1.fill = GridBagConstraints.BOTH;
-		gbc_label_1.insets = new Insets(0, 0, 5, 0);
-		gbc_label_1.gridx = 0;
-		gbc_label_1.gridy = 2;
-		diaryPanel.add(label_1, gbc_label_1);
-		
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.fill = GridBagConstraints.BOTH;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 3;
-		diaryPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.fill = GridBagConstraints.BOTH;
-		gbc_lblNewLabel_2.gridx = 0;
-		gbc_lblNewLabel_2.gridy = 4;
-		diaryPanel.add(lblNewLabel_2, gbc_lblNewLabel_2);
-		
+		usernameLabel = new JLabel("Welcome: ${{username}}");
+		usernameLabel.setVerticalAlignment(SwingConstants.BOTTOM);
+		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 15));
+		usernameLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		usernameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 				
-		table = new JTable();
-		table.setPreferredScrollableViewportSize(new Dimension(450, 650));
-		table.setOpaque(false);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"Item Name", "Remain", "Sales Price", "Model", "Brand", "Color", "IMEI", "Notes"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, Integer.class, Double.class, String.class, String.class, String.class, String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		table.getColumnModel().getColumn(0).setPreferredWidth(250);
 		
-		JScrollPane inventoryPanel = new JScrollPane(table);
-		inventoryPanel.setOpaque(false);
+		dateLabel = new JLabel("Date: 01/01/2022 - 13:50");
+		dateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		dateLabel.setFont(new Font("Dialog", Font.ITALIC, 14));
+					
+		
+		mainTabPanel.setLayout(new BoxLayout(mainTabPanel, BoxLayout.X_AXIS));		
+		
+		
+		mainFrameTab = new JTabbedPane(JTabbedPane.TOP);
+		mainFrameTab.setAutoscrolls(true);
+		
+		
+		//adding tabs
+		mainFrameTab.addTab("Diary", null, diaryPanel, "use this tab to register actions during day");
 		mainFrameTab.addTab("Inventory", null, inventoryPanel,"this is a readonly tab for controlling items on selected inventory ");
-		mainFrameTab.setMnemonicAt(1, 2);
+		mainFrameTab.addTab("Records", null, recordsPanel, "this tab shows the records of the store");
+		mainFrameTab.addTab("Data Queries", null, queriesPanel, "Get detailed data about your store");
+		mainFrameTab.addTab("Profile", null, profilePanel, "View and Edit your Profile");
+		mainFrameTab.addTab("Administrative Tools", null, administrativePanel, "this panel is for administrative purposes only");
+		
+		
+		//adding elements
+		contentPane.add(usernameLabel, new GbcManager(1,1,null,null,null,null,GridBagConstraints.WEST,null,0));
+		contentPane.add(dateLabel, new GbcManager(2,1,null,null,null,null,GridBagConstraints.EAST,null,0));
+		contentPane.add(mainTabPanel, new GbcManager(1,2,2,null,null,null,null,GridBagConstraints.BOTH,0));
+		mainTabPanel.add(mainFrameTab);
+				
+		
+		// initialization business-rendering logic
+		this.applicationClock = new MyClock(this.dateLabel);
+		this.applicationClock.start(); // does clock automatically closes itself or does it leaks ?
+		
+		//diary
+		
+		this.diaryPanel.initAmount(0); // TODO modify this after loading data
+				
+		// init logic : in the end after all field declarations
+		this.set_initialization();
 	}
+	
+	//set initialization logic (not rendering )
+	private void set_initialization() {}
 }
+
+
 
