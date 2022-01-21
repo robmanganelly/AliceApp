@@ -2,20 +2,21 @@ package uicomponents;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.SwingConstants;
 
+import uiblocks.CustomDataTable;
 import uitools.CustomTableCellRenderer;
+import uitools.CustomTableFormats;
 import uitools.GbcManager;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
@@ -37,8 +38,7 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private TableModel tableModel;
-	private JTable inventoryTable;
+	private CustomDataTable inventoryTable;
 	private JPanel panel;
 	private JSeparator separator;
 	private JScrollPane scrollTableContainer;
@@ -55,12 +55,17 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 	private JCheckBox enableFilterCheckBox;
 	private JButton applyFilterButton;
 	private JButton showDetailsButton;
+	private ArrayList<ArrayList<Object>> data;
+	private static final String[] TABLEHEADERS = new String[] { "Product  id", "Item Name", "Remain", "Sales Price", "Model", "Brand", "Color", "IMEI", "Notes" };
+	@SuppressWarnings("rawtypes")
+	private static final Class[] COLUMNTYPES = new Class[] { String.class, String.class, Integer.class, Double.class, String.class, String.class, String.class, String.class, String.class};
 	 
 
 	/**
 	 * Create the panel.
 	 */
-	public InventoryPanel() {
+	public InventoryPanel(ArrayList<ArrayList<Object>> inventoryData) {
+		this.data = inventoryData;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{1211, 0};
@@ -125,10 +130,17 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		panel.add(imeiFilterTextField, new GbcManager().gridx(7).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
 		panel.add(notesFilterTextField, new GbcManager().gridx(8).gridy(4).anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL).build());
 		
-		
-		//creating ui Components in constructor
-		inventoryTable = new JTable();
-		this.createRawTable();
+		//creating ui Table to embed inside a panel
+		inventoryTable = new CustomDataTable().buildTable(TABLEHEADERS, this.data, COLUMNTYPES);
+		inventoryTable.setDefaultRenderer(String.class, new CustomTableCellRenderer(JLabel.CENTER));
+		inventoryTable.setDefaultRenderer(Number.class, new CustomTableCellRenderer(JLabel.RIGHT,Color.white,Color.black));
+		inventoryTable.formatColumn(1, SwingConstants.CENTER, new int[][] {new int[] {39,105,255},new int[]{255,255,255}}, "Dialog", Font.BOLD, 12,false,0,CustomTableFormats.inherited);
+		inventoryTable.formatColumn(2, SwingConstants.CENTER, Color.white,Color.BLACK, new Font("Dialog", Font.BOLD, 12),true,100,CustomTableFormats.inherited);
+		inventoryTable.formatColumn(3, SwingConstants.CENTER, Color.white,Color.black, new Font("Dialog", Font.BOLD, 12),false,0,CustomTableFormats.currency);
+//		inventoryTable.formatColumn(2, SwingConstants.RIGHT,Color.WHITE,new Font("Dialog",Font.BOLD,20)).setConditionalTextColor(0, Color.GREEN, Color.GRAY,2);
+		inventoryTable.setAutoCreateRowSorter(true);
+		inventoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		inventoryTable.getColumnModel().getColumn(1).setPreferredWidth(250);
 		
 		this.scrollTableContainer = new JScrollPane();
 		this.scrollTableContainer.setViewportView(inventoryTable);
@@ -145,54 +157,9 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		
 		//rendering logic
 		this.manageFilterState(false);
-		this.showDetailsButton.setVisible(false);
-		
+		this.showDetailsButton.setVisible(false);	
 	}
-	
-	private TableModel createTableModel() {
-		this.tableModel = new DefaultTableModel(
-				new Object[][] {
-					{"1qe32w", null, 1, 2.50, null, null, null, null, null},
-					{"wed234", null, 1, 6.25, null, null, null, null, null},
-					{"1se456", null, 125, 0.75, null, null, null, null, null},
-					{"cdfrty", null, 36, 120.50, null, null, null, null, null},
-					{"123cvb", null, 14, 56.0, null, null, null, null, null},
-					{"v76uhg", null, 0, 45, null, null, null, null, null},
-				},
-				new String[] {
-					"Product  id", "Item Name", "Remain", "Sales Price", "Model", "Brand", "Color", "IMEI", "Notes"
-				}
-			) {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-				Class[] columnTypes = new Class[] {
-					String.class, String.class, Integer.class, Double.class, String.class, String.class, String.class, String.class, String.class
-				};
-				public Class getColumnClass(int columnIndex) {
-					return columnTypes[columnIndex];
-				}
-				boolean[] columnEditables = new boolean[] {
-					false, false, false, false, false, false, false, false, false
-				};
-				public boolean isCellEditable(int row, int column) {
-					return columnEditables[column];
-				}
-			};
-		return this.tableModel;
-	}
-	
-	private void createRawTable() {
-		
-		inventoryTable.setModel(this.createTableModel());
-		inventoryTable.setDefaultRenderer(String.class, new CustomTableCellRenderer(JLabel.CENTER));
-		inventoryTable.setDefaultRenderer(Number.class, new CustomTableCellRenderer(JLabel.RIGHT));
-		inventoryTable.setAutoCreateRowSorter(true);
-		inventoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		inventoryTable.getColumnModel().getColumn(1).setPreferredWidth(250);
 
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
@@ -200,12 +167,15 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		System.out.println("TODO create dialog for showing details ");
 		Component sourceComponent = arg0.getComponent();
 		System.out.println(sourceComponent);
-		if(sourceComponent.getClass() == new JTable().getClass()) {
+		if(sourceComponent.getClass() == this.inventoryTable.getClass()) {
 			//TODO store id in a field for load details if button pressed
 			System.out.println(inventoryTable.getValueAt(inventoryTable.getSelectedRow(), 0)); // this is the id.
-			System.out.println("ok");
+			System.out.println("ok"); // maybe set the id value in a field ? after launch the details whrn button clicked. remember clean field when button visib is false
+			
+			this.showDetailsButton.setVisible(this.inventoryTable.isRowSelected(this.inventoryTable.getSelectedRow()));
 		}else {
 			System.out.println("nope");
+			this.showDetailsButton.setVisible(false);
 		}
 		
 	}
@@ -241,6 +211,7 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		if (source == this.enableFilterCheckBox){
 			this.manageFilterState(state);
 		}else {
+			System.out.println("nothing selected");
 			return;
 		}
 		

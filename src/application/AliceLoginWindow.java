@@ -21,13 +21,14 @@ import javax.swing.ButtonGroup;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-public class AliceLoginWindow {
+public class AliceLoginWindow {   // TODO refactor login UI code
 
 	private JFrame frame;
 	private JTextField usernameTextField;
 	private JPasswordField passwordField;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final Action action = new ClearAction(this);
+	private JTextField companytextField;
 
 	/**
 	 * Launch the application.
@@ -145,6 +146,23 @@ public class AliceLoginWindow {
 		gbc_passwordField.gridx = 4;
 		gbc_passwordField.gridy = 3;
 		panel.add(passwordField, gbc_passwordField);
+		
+		JLabel companyLabel = new JLabel("Company");
+		GridBagConstraints gbc_companyLabel = new GridBagConstraints();
+		gbc_companyLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_companyLabel.gridx = 2;
+		gbc_companyLabel.gridy = 4;
+		panel.add(companyLabel, gbc_companyLabel);
+		
+		companytextField = new JTextField();
+		companyLabel.setLabelFor(companytextField);
+		GridBagConstraints gbc_companytextField = new GridBagConstraints();
+		gbc_companytextField.insets = new Insets(0, 0, 5, 0);
+		gbc_companytextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_companytextField.gridx = 4;
+		gbc_companytextField.gridy = 4;
+		panel.add(companytextField, gbc_companytextField);
+		companytextField.setColumns(10);
 		
 		JPanel panel_1 = new JPanel();
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();

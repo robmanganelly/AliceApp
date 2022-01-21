@@ -62,7 +62,7 @@ public class DiaryPanel extends JPanel  implements ItemListener, ActionListener{
 
 	
 	public DiaryPanel() {
-		// tests 
+		
 		
 		//set borders and grid pattern
 		

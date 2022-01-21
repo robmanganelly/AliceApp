@@ -3,7 +3,7 @@ package uitools;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface DataManager {
+public interface TableDataManager {
 		
 		
 	public ArrayList<String> getTableHeaders();

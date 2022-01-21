@@ -3,6 +3,7 @@ package uiblocks;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JTable;
@@ -12,9 +13,10 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import uitools.CustomTableCellRenderer;
-import uitools.DataManager;
+import uitools.CustomTableFormats;
+import uitools.TableDataManager;
 
-public class CustomDataTable extends JTable implements DataManager {
+public class CustomDataTable extends JTable implements TableDataManager {
 
 	/**
 	 * 
@@ -25,9 +27,9 @@ public class CustomDataTable extends JTable implements DataManager {
 		super();
 	}
 	
-	public CustomDataTable(Color color, Color textColor) {
+	public CustomDataTable(Color gridColor, Color textColor) {
 		super();
-		this.setGridColor(color);
+		this.setGridColor(gridColor);
 		this.setForeground(textColor);
 	}
 	
@@ -55,26 +57,32 @@ public class CustomDataTable extends JTable implements DataManager {
 		super(dm, cm, sm);
 	}
 	
-	public CustomDataTable buildTable(String[]headersName, Object[][] data,  Class[] tableColumnTypes ) throws IndexOutOfBoundsException {
-		if (data[0].length != headersName.length || headersName.length != tableColumnTypes.length) {
+	public CustomDataTable buildTable(String[]headersName, ArrayList<ArrayList<Object>> data,  Class[] tableColumnTypes ) throws IndexOutOfBoundsException {
+		
+		//System.out.println(data.get(0).size() != headersName.length || headersName.length != tableColumnTypes.length);
+		
+		if (data.get(0).size() != headersName.length || headersName.length != tableColumnTypes.length) {
 			throw new IndexOutOfBoundsException("mismatch between headers and data columns lengths");
 		}
 		
 		boolean[] tableColumnEditables = new boolean[headersName.length];	
-		for (int i= 0; i < data.length; i++ ) {
+		for (int i= 0; i < headersName.length; i++ ) {
 			tableColumnEditables[i] = false;
 		}
 
 		return this.buildTable(headersName, data, tableColumnTypes, tableColumnEditables);
 	}
 	
-	
-	public CustomDataTable buildTable(String[]headersName, Object[][] data,  Class[] tableColumnTypes, boolean[] tableColumnEditable ) throws IndexOutOfBoundsException {
-		if (data[0].length != headersName.length || headersName.length != tableColumnTypes.length || headersName.length != tableColumnEditable.length) {
+	public CustomDataTable buildTable(String[]headersName, ArrayList<ArrayList<Object>> data,  Class[] tableColumnTypes, boolean[] tableColumnEditable ) throws IndexOutOfBoundsException {
+		
+		//System.out.println(data.get(0).size() != headersName.length || headersName.length != tableColumnTypes.length || headersName.length != tableColumnEditable.length);
+		
+		if (data.get(0).size() != headersName.length || headersName.length != tableColumnTypes.length || headersName.length != tableColumnEditable.length) {
 			throw new IndexOutOfBoundsException("mismatch between headers and data columns lengths");
 		}
 		
-		this.setModel(new DefaultTableModel( data, headersName) {
+		
+		this.setModel(new DefaultTableModel( unpackData(data,headersName.length), headersName) {
 			/**
 			 * 
 			 */
@@ -93,22 +101,62 @@ public class CustomDataTable extends JTable implements DataManager {
 		return this;
 
 	}
-
-	public void formatColumn(int column,int alignment, Color color, Font font ) throws IndexOutOfBoundsException {
-		if (column > this.getColumnCount()) throw new IndexOutOfBoundsException("column index out of bounds");
-		//TODO		
-		this.getColumnModel().getColumn(column).setCellRenderer(new CustomTableCellRenderer(alignment, color, font));
-//		recordsTable.setDefaultRenderer(String.class, new CustomTableCellRenderer(JLabel.CENTER));
-//      this is for just one column // this is a built in class
-//		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-//		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-//		table.getColumnModel().getColumn(0).setCellRenderer( centerRenderer ); 
-//		Font c = new Font("Dialog", Font.BOLD, 15);	
+	
+	//style and formatting methods
+	
+	public void formatColumn(int column, int alignment, Color color1, Color color2, Font font, boolean conditional, Object pivot, CustomTableFormats format){
+		//steps:
+		// create the renderer
+		// set.
+		
+		CustomTableCellRenderer newColumnRenderer = new CustomTableCellRenderer(alignment, color1, color2, font);
+		newColumnRenderer.setConditional(conditional, pivot);
+		newColumnRenderer.setFormat(format);
+							
+		this.getColumnModel().getColumn(column).setCellRenderer(newColumnRenderer);
 	}
 	
-	// this is another version of the original
-	public void setFont(String fontName, int fontWeight, int fontSize) {
-		super.setFont(new Font(fontName, fontWeight, fontSize));
+	public void formatColumn(int column, int alignment,int[][] color, Font font, boolean conditional, Object pivot, CustomTableFormats format) {
+		Color c1 = new Color(color[0][0], color[0][1], color[0][2]);
+		Color c2 = new Color(color[1][0], color[1][1], color[1][2]);
+		this.formatColumn(column, alignment, c1, c2, font , conditional, pivot, format);
+	} 
+	
+	public void formatColumn(int column, int alignment, int[][] colors, String fontName, int fontStyle, int fontSize, boolean conditional, Object pivot, CustomTableFormats format) {
+		Font f = new Font(fontName, fontStyle, fontSize);
+		this.formatColumn(column, alignment, colors, f , conditional, pivot, format);
+	} 
+	
+	
+	// this is an overloaded version of the original
+		public void setFont(String fontName, int fontWeight, int fontSize) {
+			super.setFont(new Font(fontName, fontWeight, fontSize));
+		}
+			
+	// Data management methods
+	private Object[][] unpackData(ArrayList<ArrayList<Object>> container,int rowlen) {
+		
+		System.out.println(container);
+		System.out.println("---------------------");
+		
+				
+		var ret = new Object[container.size()][rowlen];
+		for (int row = 0; row < container.size(); row++) {
+			
+			System.out.println(container.get(row));
+			System.out.println("---------------------");
+			
+			ret[row] = container.get(row).toArray();
+		}
+		return ret;
+	}
+	
+	private ArrayList<ArrayList<Object>> packData (Object[][] rawData, ArrayList<ArrayList<Object>> container){
+		for(var row: rawData) {
+			var _tmp = new ArrayList<Object>(Arrays.asList(row));
+			container.add(_tmp);
+		}
+		return container;
 	}
 
 	@Override
@@ -168,8 +216,6 @@ public class CustomDataTable extends JTable implements DataManager {
 		return ret;
 	}
 	
-	
-
 	@Override
 	public boolean updateCell(int col, int row, Object value) {
 		try{

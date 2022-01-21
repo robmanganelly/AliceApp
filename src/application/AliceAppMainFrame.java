@@ -1,35 +1,34 @@
 package application;
 
-import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import uiblocks.MyClock;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JLabel;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import java.awt.Font;
-import javax.swing.table.DefaultTableModel;
-
 import uicomponents.AdministrativePanel;
 import uicomponents.DiaryPanel;
 import uicomponents.InventoryPanel;
 import uicomponents.ProfilePanel;
 import uicomponents.QueriesPanel;
 import uicomponents.RecordsPanel;
+import uitools.ApplicationData;
 import uitools.GbcManager;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-
 import javax.swing.SwingConstants;
 
-public class AliceAppMainFrame extends JFrame {
+public class AliceAppMainFrame extends JFrame implements ApplicationData {
 
 	/**
 	 * 
@@ -66,6 +65,20 @@ public class AliceAppMainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AliceAppMainFrame() {
+		
+		//fake data //TODO to be set
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","tenis de mujer",123,250,"de mexico",null,"carmelitas",null,null} )));
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","zapatos de nino",2,125,"suela baja",null,"rojos",null,null} )));
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","otra cosa",1,4500,"modelo",null,null,null,null} )));
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","tenis de hombre",345,1450,"suela blanca",null,"varios",null,null} )));
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","medias de nina",34,4800,"media de escuela",null,"blanca",null,null} )));
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","tacones de mujer",12,120,"de usa",null,"varios",null,null} )));
+		INVENTORY_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{"1549894646ased","zapatos de bebe",3456,4510,"yusniel",null,"negros",null,null} )));
+		RECORDS_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{new Date(),"efrerfe","sale",null} )));
+		RECORDS_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{new Date(),"owner","purchase",null} )));
+		RECORDS_DATA.add(new ArrayList<Object>(Arrays.asList(new Object[]{new Date(),"administrator","transport","see details: important"} )));
+		
+		
 		// set frame layout
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1305, 789);
@@ -82,8 +95,8 @@ public class AliceAppMainFrame extends JFrame {
 		
 		//create UI elements
 		diaryPanel = new DiaryPanel();
-		inventoryPanel = new InventoryPanel();
-		recordsPanel = new RecordsPanel();
+		inventoryPanel = new InventoryPanel(INVENTORY_DATA);
+		recordsPanel = new RecordsPanel(RECORDS_DATA);
 		queriesPanel = new QueriesPanel();
 		profilePanel = new ProfilePanel();
 		administrativePanel = new AdministrativePanel();
