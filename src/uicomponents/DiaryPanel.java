@@ -10,11 +10,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.RenderedImage;
+import java.io.File;
+
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -59,6 +65,9 @@ public class DiaryPanel extends JPanel  implements ItemListener, ActionListener{
 	private JScrollPane scrollPaneForCommentsTextArea;
 	private JLabel commentsLabel;
 	private AmountComboBox itemAmountComboBox;
+	//image
+	private JLabel productImageContainerLabel;
+	private String imagePath = "images/no-image-icon.png";
 
 	
 	public DiaryPanel() {
@@ -113,6 +122,9 @@ public class DiaryPanel extends JPanel  implements ItemListener, ActionListener{
 		commentsLabel.setLabelFor(commentsTextArea);
 		scrollPaneForCommentsTextArea.setViewportView(commentsTextArea);
 		insertDataButton = new JButton("Insert Data");
+		productImageContainerLabel = new JLabel(getImagePath());
+		
+		
 		
 		
 		//adding previously created components
@@ -127,7 +139,7 @@ public class DiaryPanel extends JPanel  implements ItemListener, ActionListener{
 		this.add(currentTerminalComboBox, new GbcManager(2,4,6,null,null,null,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL,0));
 		this.add(currentSelectedItemLabel,  new GbcManager(1,5,null,null,null,null,null,null,0));		
 		this.add(selectedItemComboBox, new GbcManager(2,5,6,null,null,null,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL,0));
-		this.add(requestItemToAdminButton, new GbcManager(9,5,2,null,null,null,null,null,0));
+		this.add(requestItemToAdminButton, new GbcManager(2,11,2,null,null,null,null,null,0));
 		this.add(quantityLabel, new GbcManager(1,6,null,null,null,null,null,null,0));
 		this.add(itemAmountComboBox, new GbcManager(2,6,6,null,null,null,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL,0));
 		this.add(retailPriceLabel, new GbcManager(1,7,null,null,null,null,null,null,0));
@@ -138,6 +150,8 @@ public class DiaryPanel extends JPanel  implements ItemListener, ActionListener{
 		this.add(commentsLabel, new GbcManager(1,9,null,null,null,null,GridBagConstraints.NORTH,null,0));
 		this.add(scrollPaneForCommentsTextArea, new GbcManager(2,9,6,null,null,null,null,GbcManager.BOTH,0));
 		this.add(insertDataButton, new GbcManager(1,11,null,null,null,null,null,null,0));
+		this.add(productImageContainerLabel, new GbcManager().gridx(1).gridy(14).gridwidth(7).build());
+		
 		
 		//buttonGroups adding
 		radioButtonGroup.add(originalPriceRadioButton);
@@ -196,6 +210,14 @@ public class DiaryPanel extends JPanel  implements ItemListener, ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private ImageIcon getImagePath() {
+		return new ImageIcon(this.imagePath);		
+	}
+	
+	private void setImagePath(String path) { // use this method whenever a item is selected
+		this.imagePath = path;
 	}
 
 }

@@ -120,7 +120,8 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer implements
 			setValue(_d.format(value));
 			break;
 		case currency:
-			var _c = NumberFormat.getCurrencyInstance();
+			Locale locale = new Locale("en", "US"); // allows to format using $
+			var _c = NumberFormat.getCurrencyInstance(locale);
 			setValue(_c.format(value));
 		}
 		

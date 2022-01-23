@@ -144,11 +144,7 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		
 		this.scrollTableContainer = new JScrollPane();
 		this.scrollTableContainer.setViewportView(inventoryTable);
-		GridBagConstraints gbc_scrollTableContainer = new GridBagConstraints();
-		gbc_scrollTableContainer.fill = GridBagConstraints.BOTH;
-		gbc_scrollTableContainer.gridx = 0;
-		gbc_scrollTableContainer.gridy = 1;
-		this.add(scrollTableContainer, gbc_scrollTableContainer);
+		this.add(scrollTableContainer, new GbcManager().gridx(0).gridy(1).fill(GridBagConstraints.BOTH).build());
 		
 		
 		//adding action listeners
