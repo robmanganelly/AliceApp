@@ -39,7 +39,7 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 	 */
 	private static final long serialVersionUID = 1L;
 	private CustomDataTable inventoryTable;
-	private JPanel panel;
+	private FiltersPanel filtersPanel;
 	private JScrollPane scrollTableContainer;
 	private JTextField idFilterTextField;
 	private JTextField itemNameFiltertextField;
@@ -50,11 +50,7 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 	private JTextField colorFilterTextField;
 	private JTextField imeiFilterTextField;
 	private JTextField notesFilterTextField;
-	private Component verticalStrut;
-	private JCheckBox enableFilterCheckBox;
-	private JButton applyFilterButton;
-	private JButton showDetailsButton;
-	private JSeparator separator;
+	
 	private ArrayList<ArrayList<Object>> data;
 	private static final String[] TABLEHEADERS = new String[] { "Product  id", "Item Name", "Remain", "Sales Price", "Model", "Brand", "Color", "IMEI", "Notes" };
 	@SuppressWarnings("rawtypes")
@@ -71,29 +67,15 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		gridBagLayout.columnWidths = new int[]{1211, 0};
 		gridBagLayout.rowHeights = new int[]{36, 339, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.05, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		panel = new JPanel();
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0, 290, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
-		
+		filtersPanel = new FiltersPanel();
+				
 		//add layout main panel 
-		add(panel, new GbcManager().gridx(0).gridy(0).fill(GridBagConstraints.BOTH).insets(0,0,5,0).ipadx(10).ipady(10).build());//0.0.5.0 must rectify 
+		add(filtersPanel,new GbcManager().gridx(0).gridy(0).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
 		
 		//initialize ui components 
-		verticalStrut = Box.createVerticalStrut(20);
-		showDetailsButton = new JButton("Show Details of Selected Row");
-		/* action */showDetailsButton.addActionListener(this);
-		enableFilterCheckBox = new JCheckBox("Filters");
-		/* font */enableFilterCheckBox.setFont(new Font("Dialog", Font.BOLD, 15));
-		applyFilterButton = new JButton("Apply");
-		separator = new JSeparator();
-		/* color */separator.setForeground(Color.BLACK);
 		idFilterTextField = new JTextField();
 		/* columns */idFilterTextField.setColumns(10);
 		itemNameFiltertextField = new JTextField();
@@ -116,19 +98,16 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		
 		//add ui components inside panel//  new GbcManager(0,0,null,null,null,null,null,GridBagConstraints.null,0,null,null ) 
 //		panel.add(verticalStrut, new GbcManager().gridx(0).gridy(0).fill(GridBagConstraints.HORIZONTAL).insets(0,0,5,0).ipady(1).build());		
-		panel.add(showDetailsButton, new GbcManager().gridx(0).gridy(1).gridwidth(2).fill(GridBagConstraints.HORIZONTAL).insets(0,5,0,5).build());
-		panel.add(enableFilterCheckBox, new GbcManager().gridx(7).gridy(1).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(applyFilterButton, new GbcManager().gridx(8).gridy(1).fill(GridBagConstraints.HORIZONTAL).insets(0,0,5,5).build());
-		panel.add(separator, new GbcManager().gridx(0).gridy(2).gridwidth(9).fill(GridBagConstraints.HORIZONTAL).insets(5,0,5,0).build());		
-		panel.add(idFilterTextField, new GbcManager().gridx(0).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(itemNameFiltertextField, new GbcManager().gridx(1).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(remainFilterTextField, new GbcManager().gridx(2).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());		
-		panel.add(salesPriceFilterTextField, new GbcManager().gridx(3).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());		
-		panel.add(modelFilterTextField, new GbcManager().gridx(4).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(brandFilterTextField, new GbcManager().gridx(5).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(colorFilterTextField, new GbcManager().gridx(6).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(imeiFilterTextField, new GbcManager().gridx(7).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
-		panel.add(notesFilterTextField, new GbcManager().gridx(8).gridy(4).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build());
+			
+		filtersPanel.addFilter(idFilterTextField);
+		filtersPanel.addFilter(itemNameFiltertextField,26);
+		filtersPanel.addFilter(remainFilterTextField);		
+		filtersPanel.addFilter(salesPriceFilterTextField);		
+		filtersPanel.addFilter(modelFilterTextField);
+		filtersPanel.addFilter(brandFilterTextField);
+		filtersPanel.addFilter(colorFilterTextField);
+		filtersPanel.addFilter(imeiFilterTextField);
+		filtersPanel.addFilter(notesFilterTextField);
 		
 		//creating ui Table to embed inside a panel
 		inventoryTable = new CustomDataTable().buildTable(TABLEHEADERS, this.data, COLUMNTYPES);
@@ -148,12 +127,11 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		
 		
 		//adding action listeners
-		enableFilterCheckBox.addItemListener(this);	
 		inventoryTable.addMouseListener(this);
 		
 		//rendering logic
-		this.manageFilterState(false);
-		this.showDetailsButton.setVisible(false);	
+		
+			
 	}
 
 
@@ -164,16 +142,12 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 		Component sourceComponent = arg0.getComponent();
 		System.out.println(sourceComponent);
 		if(sourceComponent == this.inventoryTable) {
-			//TODO store id in a field for load details if button pressed
+			//TODO store id in a field for load details if button pressed, do this inside child cmp Panel
 			System.out.println(inventoryTable.getValueAt(inventoryTable.getSelectedRow(), 0)); // this is the id.
-			System.out.println("ok"); // maybe set the id value in a field ? after launch the details whrn button clicked. remember clean field when button visib is false
+			System.out.println("ok"); // maybe set the id value in a field ? after launch the details when button clicked. remember clean field when button visib is false
 			
-			this.showDetailsButton.setVisible(this.inventoryTable.isRowSelected(this.inventoryTable.getSelectedRow()));
-		}else {
-			System.out.println("nope");
-			this.showDetailsButton.setVisible(false);
+			this.filtersPanel.manageDetailsButtonVisibility(getFocusTraversalKeysEnabled());
 		}
-		
 	}
 
 	@Override
@@ -202,30 +176,9 @@ public class InventoryPanel extends JPanel implements MouseListener, ItemListene
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		boolean state = e.getStateChange() == ItemEvent.SELECTED;
-		Object source = e.getItemSelectable();
-		if (source == this.enableFilterCheckBox){
-			this.manageFilterState(state);
-		}else {
-			System.out.println("nothing selected");
-			return;
-		}
-		
+				
 	}
 
-	private void manageFilterState(boolean state) {
-		this.idFilterTextField.setVisible(state);
-		this.itemNameFiltertextField.setVisible(state);
-		this.remainFilterTextField.setVisible(state);
-		this.salesPriceFilterTextField.setVisible(state);
-		this.modelFilterTextField.setVisible(state);
-		this.brandFilterTextField.setVisible(state);
-		this.colorFilterTextField.setVisible(state);
-		this.imeiFilterTextField.setVisible(state);
-		this.notesFilterTextField.setVisible(state);
-		this.applyFilterButton.setVisible(state);
-		
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -77,12 +77,12 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 		
 		
 		// Create ui components
-//		verticalStrut = Box.createVerticalStrut(20);
 		showDetailsButton = new JButton("Show Details");
-		showDetailsButton.setVisible(false);
+		/* initial visible state */showDetailsButton.setVisible(false);
 		enableFilterCheckBox = new JCheckBox("Filters");
 		/* font */enableFilterCheckBox.setFont(new Font("Dialog", Font.BOLD, 15));
 		applyFilterButton = new JButton("Apply Filters");
+		/* enabled initial state*/ applyFilterButton.setEnabled(false);
 		separator = new JSeparator();
 		filterBoxPanel = new  JPanel();
 		
@@ -103,14 +103,15 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 		enableFilterCheckBox.addItemListener(this);	
 	}
 	
-			
-	public void addFilter(Component cmp){
-		this.filterSet.add((JTextField) cmp);
-//		cmp.setPreferredSize(new Dimension(2, 2));
-//		int position = filterSet.indexOf(cmp);
-//		GbcManager gbc = new GbcManager().gridx(position).gridy(4).anchor(GridBagConstraints.CENTER).fill(GridBagConstraints.HORIZONTAL).insets(0,0,0,5).build();
-//		this.add(cmp,gbc);
+	public void addFilter(JTextField cmp) {
+		this.addFilter(cmp,10);
+	}
+	
+	public void addFilter(JTextField cmp, int cols){
+		this.filterSet.add(cmp);
 		this.filterBoxPanel.add(cmp);
+		cmp.setEnabled(false);
+		cmp.setColumns(cols);
 	}
 
 	@Override
